@@ -30,11 +30,8 @@ Note that some of the more complex examples will not work on STACK. Just keep th
 ## Can I add HTML to CAS-enabled text? ##
 
 Yes.  You can use HTML tags as usual.  For example, you can use these tags to insert references to images etc.
-It's even possible to embed question values within image tags to allow calls to third-party dynamic graph generators.
 
-The Simple Venn sample question demonstrates using the [Google charts](http://code.google.com/apis/chart/) API:
-
-![](http://chart.apis.google.com/chart?cht=v&chs=200x100&chd=t:100,100,0,50&chdl=A|B)
+We recommend you do not include arbitrary `<script>` tags with JS code.  Future versions of STACK will likely be much more strict about cross-site scripting.
 
 ## How can I test out STACK specific functions in a Maxima session? ##
 
@@ -57,7 +54,7 @@ This is a job for a developer.  Please contact us.
 
 ## How can I use subscripts in STACK ##
 
-More information on subscripts is given in the atoms and subscripts section of the more general [Maxima](../CAS/Maxima.md) documentation.  Also see the inputs extra option [consolidatesubscripts](Inputs.md).
+More information on subscripts is given in the atoms and subscripts section of the more general [Maxima](../CAS/Subscripts.md) documentation.  Also see the inputs extra option [consolidatesubscripts](Inputs/Input_options.md).
 
 ## How can I confirm my student's answer is fully simplified? ##
 
@@ -98,10 +95,6 @@ Then, you should get error reporting.  As an example navigate to
 
     Site administration -> Plugins -> Question types -> STACK -> Healthcheck
 
-There you can see an example of an expression sent to Maxima.  Namely:
-
-    cab:block([ RANDOM_SEED, OPT_NoFloats, sqrtdispflag, simp, assume_pos, caschat0, caschat1], stack_randseed(0), make_multsgn(dot), make_complexJ(i), OPT_NoFloats:true, sqrtdispflag:true, simp:true, assume_pos:false, print("[STACKSTART Locals= [ ") , print("0=[ error= ["), cte("caschat0",errcatch(caschat0:plot([x^4/(1+x^4),diff(x^4/(1+x^4),x)],[x,-3,3]))) , print("1=[ error= ["), cte("caschat1",errcatch(caschat1:plot([sin(x),x,x^2,x^3],[x,-3,3],[y,-3,3]))) , print("] ]") , return(true) );
-
-Expressions such as this can be copied into the [STACK-Maxima sandbox](../CAS/STACK-Maxima_sandbox.md) and evaluated.  The errors returned here might help track down the problem.
+There you can see an example of an expression sent to Maxima.  Expressions such as this can be copied into the [STACK-Maxima sandbox](../CAS/STACK-Maxima_sandbox.md) and evaluated.  The errors returned here might help track down the problem.
 
 The issue is normally that you have tried to create a _syntactically invalid_ maxima command.  For example `[a,,b]` will crash Maxima.  Since we have not created a full parser, all syntax errors like this are not yet trapped.

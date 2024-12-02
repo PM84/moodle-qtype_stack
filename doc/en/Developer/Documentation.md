@@ -4,10 +4,33 @@ User documentation is written in an extended implementation of the markup langua
 [MarkDown](http://daringfireball.net/projects/markdown/). This page is intended
 for people wishing to write, edit and translate the documentation.
 
+## Purpose and structure of the documentation
+
+Documentation serves a number of purposes.  The main documentation is for teachers writing STACK questions and using STACK questions.
+
+Secondary documentation is designed for
+
+1. Students (e.g. how to type in answers).
+2. Installation of the plugin.
+3. Developers of the plugin.
+
+The main documentation is arranged as follows.
+
+* About the project, community, etc.
+* Quick-start for STACK question authors.
+* Authoring individual questions. Reference of features, e.g. inputs, castext, answert tests.
+* Maxima reference documentation.
+* Specialist tools - quthoring questions linking many features, e.g. JSXGraph, GeoGebra, Drag and drop questions.
+* STACK question administation (not Moodle quiz features), e.g. testing, deploying random variants, reporting, question library.
+* Topics - authoring example questions in different mathematical topics.
+* Moodle-specific features, e.g. setting up a quiz, import/export of moodle questions.
+* Installation of `qtype_stack` into Moodle.
+* Development of the plugin.
+* Student-focused documentation.
+
 ## Markdown language
 
 * The [markdown](http://daringfireball.net/projects/markdown/) project external site.
-* [A cheat sheet](http://scottboms.com/-/downloads/documentation/markdown_cheatsheet.pdf) is available for quick reference.
 
 **Warning:** markdown uses whitespace and formatting to give meaning.  The number of spaces at the beginning and the ends of lines convey specific meaning in markdown.  An example is the way code blocks are included, which is useful for including fragments of Maxima code.
 

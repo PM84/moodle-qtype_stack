@@ -1,14 +1,16 @@
 # Random objects
 
-STACK can generate structured random objects.  STACK provides a [Maxima](Maxima.md) function `rand()` which can be used in the question and answer variables.
+STACK can generate structured random objects.  STACK provides a [Maxima](Maxima_background.md) function `rand()` which can be used in the question and answer variables.
 
 STACK creates pseudo-random numbers from a definite seed.
 This ensures that when a particular student returns they see the same variant of the question.
-(Note to site maintainers: if you upgrade your Maxima version mid-way through an academic cycle, then there is no gurantee that the random numbers will remain the same.  It is unlikley Maxima will change its random number generation between versions, but if it important to you please check first!)
+(Note to site maintainers: if you upgrade your Maxima version mid-way through an academic cycle, then there is no gurantee that the random numbers will remain the same.  It is unlikely Maxima will change its random number generation between versions, but if it important to you please check first!)
 
 For the purposes of learning and teaching, we do not need an algorithm which is statistically perfect. We are much more interested in simplicity, efficiency and reproducibility across platforms. Hence, we adopt pseudo-random numbers.
 
-It is very important to test each random version a student is likely to see and not to leave this to chance.  To pre-generate and test random variants see the separate documentation on [deploying random variants](../Authoring/Deploying.md).
+It is very important to test each random version a student is likely to see and not to leave this to chance.  To pre-generate and test random variants see the separate documentation on [deploying random variants](../STACK_question_admin/Deploying.md).
+
+Users may also [systematically deploy](../STACK_question_admin/Deploying_systematically.md) all variants of a question in a simple manner.
 
 ## rand() {#rand}
 
@@ -16,7 +18,7 @@ STACK provides its own function `rand()`.
 
 * `rand(n)` generates an integer between \(0\) and \(n-1\).
 * `rand(n.0)` generates a floating point number between \(0\) and \(n\).  It is probably more useful to use something like a=float(rand(1000)/1000)
-  to obtain an accurate number of decimal places.  An alternative is to use the [Maxima](Maxima.md) function `round()`
+  to obtain an accurate number of decimal places.  An alternative is to use the [Maxima](Maxima_background.md) function `round()`
 * `rand([a,b,...,z])` makes a random selection from a list.
 * `rand({a,b,...,z})` makes a random selection from a set.
 * `rand(matrix(..))` applies rand to each element of the matrix.
@@ -115,7 +117,7 @@ Another option is to use `rand()` on a list of lists, allowing to group the info
     [p, g] : rand([["Mercury",3.61], ["Earth",9.81], ["Mars",3.75]]);
     ta:t*g/(4*%pi^2);
 
-Here, `rand()` will return one random list of the given lists, say `["Earth",9.81]`. The assigment `[p, g] : ["Earth",9.81]` then works as one would expect, namely just as `p : "Earth"; g : 9.81;` would.
+Here, `rand()` will return one random list of the given lists, say `["Earth",9.81]`. The assignment `[p, g] : ["Earth",9.81]` then works as one would expect, namely just as `p : "Earth"; g : 9.81;` would.
 
 ## Random objects satisfying a condition
 

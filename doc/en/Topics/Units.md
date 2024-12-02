@@ -28,6 +28,8 @@ where `num` is the part interpreted to be the numerical portion, and `units` is 
 
 ## Examples  ##
 
+An example question is given in the stacklibrary `Topics\Topics_units_basic.xml`
+
 ### Example 1  ###
 
 Let us assume that the correct answer is `12.1*m/s^2`.
@@ -44,17 +46,18 @@ Let us assume that the correct answer is `12.1*m/s^2`.
 
 Stack provides an input type to enable teachers to support students in entering answers with scientific units.
 
-This input type is built closely on the algebraic input type with the following differences.
+The goal of this input is to validate against the pattern `number * units`.  
 
 1. The input type will check both the teacher's answer and the student's answer for units.  The input will require the student's answer to have units if and only if the teacher's answer also has units.  This normally forces the student to use units.  Also, students sometimes add units to dimensionless quantities (such as pH) and this input type will also enable a teacher to reject such input as invalid when the teacher does not use units.
-2. This input type *always accepts floating-point numbers*, regardless of the option set on the edit form.  The input type should display the same number of significant figures as typed in by the student.  Note that all other input types truncate the display of unnecessary trailing zeros in floating point numbers, loosing information about significant figures.  If you want to specifically test for significant figures, use this input type, with the teacher's answer having no units.
-3. The student must type a number of some kind.  Entering units on their own will be invalid.  If you want to ask a student for units, then use the algebraic input type.  Units on their own are a not valid expression for this input.
-4. If the teacher shows the validation, "with variable list" this will be displayed as "the units found in your answer are"...
-5. The student is permitted to use variable names in this input type.
-6. The "insert stars" option is unchanged.  You may or may not want your students to type a `*` or space between the numbers and units for implied multiplication.
-7. You may want the single letter variable names options here.  Note that since `km` literally means `k*m=1000*m` this is not a problem with most units.
-8. The input type checks for units in a case sensitive way.  If there is more than one option then STACK suggests a list.  E.g. if the student types `mhz` then STACK suggests `MHz` or `mHz`.
-9. You can require numerical accuracy at validation by using the `mindp`, `maxdp`, `minsf` and `maxsf` extra options, as documented in the [numerical input](../Authoring/Numerical_input.md).
+2. In validating against the pattern `number * units` we do not accept complex expressions which might simplify to this with some additional calculations.  For example, an answer such as `9.4*m-53*cm` is not considered valid by this input.
+3. This input type *always accepts floating-point numbers*, regardless of the option set on the edit form.  The input type should display the same number of significant figures as typed in by the student.  Note that all other input types truncate the display of unnecessary trailing zeros in floating point numbers, loosing information about significant figures.  If you want to specifically test for significant figures, use this input type, with the teacher's answer having no units.
+4. The student must type a number of some kind.  Entering units on their own will be invalid.  If you want to ask a student for units, then use the algebraic input type.  Units on their own are a not valid expression for this input.
+5. If the teacher shows the validation, "with variable list" this will be displayed as "the units found in your answer are"...
+6. The student is permitted to use variable names in this input type.
+7. The "insert stars" option is unchanged.  You may or may not want your students to type a `*` or space between the numbers and units for implied multiplication.
+8. You may want the single letter variable names options here.  Note that since `km` literally means `k*m=1000*m` this is not a problem with most units.
+9. The input type checks for units in a case sensitive way.  If there is more than one option then STACK suggests a list.  E.g. if the student types `mhz` then STACK suggests `MHz` or `mHz`.
+10. You can require numerical accuracy at validation by using the `mindp`, `maxdp`, `minsf` and `maxsf` extra options, as documented in the [numerical input](../Authoring/Inputs/Numerical_input.md).
 
 There are surprisingly few ambiguities in the units set up, but there will be some that the developers have missed (correctly dealing with ambiguous input is by definition an impossible problem!).  Please contact us with suggestions for improvements.
 
@@ -129,7 +132,7 @@ The function `stack_unit_si_declare(true)` declares variables as units.  (Note t
 * If you do not declare `stack_unit_si_declare(true)` in the question variables you may need to do so in the feedback text itself.
 * If you are manipulating two expressions and you want to ensure they both use the same units use `stack_unit_si_to_si_base(ex)` on each.  This ensures only the base units of SI are used.  E.g. `stack_unit_si_to_si_base(stackunits(12.1,km))` gives `stackunits(12100.0,m)`.
 
-This function declares all units in one go, and there is no way to declare only a subset. Indeed, using only a subset would disrupt the conversion logic.  Defining all the units restricts the number of variable names available in a particular question, e.g. \(F\) is assumed to represent Farad, and all units are typeset in Roman type, e.g. \( \mathrm{F} \) rather than the normal \( F \). If you need to fine-tune the display how do to so if explained in the atoms and subscripts section of the more general [Maxima](../CAS/Maxima.md) documentation.
+This function declares all units in one go, and there is no way to declare only a subset. Indeed, using only a subset would disrupt the conversion logic.  Defining all the units restricts the number of variable names available in a particular question, e.g. \(F\) is assumed to represent Farad, and all units are typeset in Roman type, e.g. \( \mathrm{F} \) rather than the normal \( F \). If you need to fine-tune the display how do to so if explained in the atoms and subscripts section of the more general [Maxima](../CAS/Maxima_background.md) documentation.
 
 The function `stackunits_make(ex)` takes the expression `ex` and, if this is a product of numbers and units, it returns an inert function `stackunits` with arguments `stackunits(numbers, symbols)`.  Note, symbols will include a mix of variables, and symbols which are considered to be units. Use of this function autoloads `stack_unit_si_declare(true)`.
 
@@ -156,7 +159,17 @@ The functions
 
 try to split the expression into units and numbers, and the return the units and numbers found.  If there are no numbers, `stack_units_nums(ex)` returns `NULLNUM`. If there are no numbers, `stack_units_units(ex)` returns `NULLUNITS`.  These are special tags, but note they are displayed by LaTeX as empty strings.  (You could also use `first(args(ans1))` or `second(args(ans1))` respectively to access the numerical and units parts.)
 
+The reason for having `NULLNUM` is so that we can tell the difference between `m/s` and `1m/s`.  If you want to use the value in an answer test and don't care about the difference (or want `NULLNUM=1`) then use `ev(stack_units_nums(ex),NULLNUM=1)`.
+
 The function `stack_units_split` is deprecated.  DO NOT USE.
+
+## Fine-tuning the display ##
+
+By default STACK's TeX function prints out `stackunits(10,m/s)` as \( 10\, m/s\).  That is, without any multiplication sign between the numerical part and the units.  In some edge cases you might want to add this multiplication sign in.  To do this, use
+
+    texput(multsgnstackunits, "\\cdot");
+
+in the question variables.  In castext you can use, e.g. `{@(texput(multsgnstackunits, "\\cdot "), stackunits(1, s^-1))@}` to create output \({1\cdot s^ {- 1 }}\).
 
 ## Custom units ##
 

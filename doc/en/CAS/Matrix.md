@@ -21,6 +21,8 @@ And a function to compute reduced row echelon form
 
     rref(m)
 
+(Note the Maxima functions `addrow` and `addcol` appends rows/columns onto the matrix.)
+
 ## Assigning individual elements ##
 
 To assign values to individual elements, use the simple syntax such as the following.
@@ -88,9 +90,9 @@ For an individual question, the teacher can set the variable
 
 in any of the usual places, e.g. in the question variables.
 
-To set the display of an individual matrix, `m` say, in CASText you can use
+To set the display of an individual matrix, `m` say, in castext you can use
 
-    {@(lmxchar:"|", m)@} 
+    {@(lmxchar:"|", m)@}
 
 Since `lmxchar` is a global setting in Maxima, you will have to set it back when you next display a matrix.  Not ideal, but there we are.
 
@@ -98,14 +100,19 @@ Note, STACK only displays matrices with matching parentheses.  If you want somet
 \[ f(x) = \left\{ \begin{array}{cc} 1, & x<0 \\ 0, & x\geq 0 \end{array}\right.\]
 then you will have to display the matrix without parentheses and sort out the mismatching parentheses in the CASText at the level of display.
 
-## Vectors ##
+For example, if we have the question variable `f:matrix([4*x+4, x<1],[-x^2-4*x-8, x>=1];` and the castext `\[ f(x) := \left\{ {@(lmxchar:"", f)@} \right. \]` STACK generates
+\[ f(x) := \left\{ {\begin{array}{cc} 4\cdot x+4 & x < 1 \\ -x^2-4\cdot x-8 & x\geq 1 \end{array}} \right. \]
+Notice the use of LaTeX `\left\{` to automatically size the parentheses and `\right.` to represent a matching, but invisible closing parentesis.
+
+## Vectors ## {#vectors}
 
 If you are trying to use the vector notation such as \(3i+4j\) you will probably want to redefine \(i\) to be an abstract symbol, not a complex number.
-More information on this is given under [Numbers](Numbers.md).
+More information on this is given under [Numbers](Numbers.md).  In particular, use the question level option "Meaning and display of sqrt(-1)" value `symi` to stop interpreting `i` with `i^2=-1` and return it to being an abstract symbol.
 
 Another way to do this is to create matrices as follows:
 
     ordergreat(i,j,k);
+    %_stack_preamble_end;
     p:matrix([-7],[2],[-3]);
     q:matrix([i],[j],[k]);
 
@@ -117,7 +124,9 @@ If you turn the option "Multiplication sign" to none, this should display as
 \[-7\,{\bf{i}}+2\,{\bf{j}}-3\,{\bf{k}}\]
 Notice the use of the function `ordergreat`.  `ordergreat` can only be used once at the beginning of the question.
 
-The vector `stackvector(a)` and the atom `a` are different, and are not considered algebraically equivalent.  While students may type in `stackvector(a)` as an answer, they are likely to type in `a`.  The teacher can either (1) add in `stackvector` ephemeral forms to the student's answer in the feedback variables using `texboldatoms` or 92) remove all `stackvector` forms from the teacher's answer by using the `destackvector(ex)` function on their answer.  In the future we may have an option in the input to apply texboldatoms to student's expressions.
+If you use the special constant `%_stack_preamble_end;` then anything before this constant will be available everywhere in the question, including the inputs.
+
+The vector `stackvector(a)` and the atom `a` are different, and are not considered algebraically equivalent.  While students may type in `stackvector(a)` as an answer, they are likely to type in `a`.  The teacher can either (1) add in `stackvector` ephemeral forms to the student's answer in the feedback variables using `texboldatoms` or (2) remove all `stackvector` forms from the teacher's answer by using the `destackvector(ex)` function on their answer.  In the future we may have an option in the input to apply texboldatoms to student's expressions.
 
 The display of the ephemeral form of `stackvector` is controlled by the function `stackvectortex`, e.g. you can display vectors differently using the following examples.
 
@@ -140,7 +149,7 @@ and a student types in `a*x+b*y` then the tex output will be \(a\cdot \mathbf{\v
 
 ### Vector cross product ###
 
-The wedge product operator is denoted by the tilde `~`.  This is the `itensor` package.  This package is not normally loaded by STACK, and in any case the package takes lists and not matrices.  For convenience, the following function has been added which requires `3*1` matrices.  
+The wedge product operator is denoted by the tilde `~`.  This is the `itensor` package.  This package is not normally loaded by STACK, and in any case the package takes lists and not matrices.  For convenience, the following function has been added which requires `3*1` matrices.
 
     crossproduct(a,b);
 
