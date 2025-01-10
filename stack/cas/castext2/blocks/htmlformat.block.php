@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with STACK.  If not, see <http://www.gnu.org/licenses/>.
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../block.interface.php');
@@ -28,11 +29,12 @@ class stack_cas_castext2_htmlformat extends stack_cas_castext2_block {
 
     public function compile($format, $options): ?MP_Node {
         // Basically we change the value of $format for this subtree.
-        // Note that the jsxgraph block does this automatically.
+        // Note that the jsxgraph and geogebra block does this automatically.
         $r = new MP_List([new MP_String('htmlformat')]);
+
         $flat = $this->is_flat();
 
-        $items = array();
+        $items = [];
         foreach ($this->children as $item) {
             $c = $item->compile(castext2_parser_utils::RAWFORMAT, $options);
             if ($c !== null) {
@@ -62,12 +64,13 @@ class stack_cas_castext2_htmlformat extends stack_cas_castext2_block {
         return $flat;
     }
 
-    public function postprocess(array $params, castext2_processor $processor=null): string {
+    public function postprocess(array $params, castext2_processor $processor,
+        castext2_placeholder_holder $holder): string {
         $content = '';
         // Just collapse it.
         for ($i = 1; $i < count($params); $i++) {
             if (is_array($params[$i])) {
-                $content .= $processor->process($params[$i][0], $params[$i]);
+                $content .= $processor->process($params[$i][0], $params[$i], $holder, $processor);
             } else {
                 $content .= $params[$i];
             }
@@ -77,6 +80,6 @@ class stack_cas_castext2_htmlformat extends stack_cas_castext2_block {
     }
 
     public function validate_extract_attributes(): array {
-        return array();
+        return [];
     }
 }

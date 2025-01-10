@@ -1,6 +1,6 @@
 # Tables
 
-STACK provides an intert function `table` for typesetting mathematical tables, provided originally to typeset truth tables in [Propositional Logic](../Topics/Propositional_Logic.md).
+STACK provides an inert function `table` for typesetting mathematical tables, provided originally to typeset truth tables in [Propositional Logic](../Topics/Propositional_Logic.md).
 
 You can create a table directly.  Notice the first row is a heading row.
 
@@ -14,7 +14,8 @@ However, there are some special rules for the tex display.
 3. There are currently no options for customising printing of borders, etc.
 4. You can highlight entries in the table using the command `texcolor("col", ex)`.  Note however, this will also underline any entries (as colour alone is poor accessibility practice.).
 
-The table `T0` is displayed as \[ {\begin{array}{c|c} x & x^3\\ \hline -1 & -1 \\ 0 & 0 \\ 1 & 1 \\ 2 & 8 \\ 3 & 27\end{array}} \].
+The table `T0` is displayed as 
+\[ \begin{array}{c|c} x & x^3\\ \hline -1 & -1 \\ 0 & 0 \\ 1 & 1 \\ 2 & 8 \\ 3 & 27\end{array} \].
 
 `table_bool_abbreviate:true` is a boolean variable.  If set to `true` (the default) boolean entries `true/false` will be abbreviated to `T/F` respectively when creating the LaTeX for display, to keep the table small and tidy looking.  All other entries in the table are typeset normally.  This only affects the LaTeX display, and table entries remain boolean.
 
@@ -30,7 +31,7 @@ If you want to identify which entries really are different then you could do som
 
     table_zip_with(lambda([ex1,ex2], is(ex1=ex2)), T1, T2)
 
-If you find yourself manipulating tables, the above funtion provides a starting point.  Please ask the developers to add anything you use regularly.
+If you find yourself manipulating tables, the above function provides a starting point.  Please ask the developers to add anything you use regularly.
 
 ## Examples.
 
@@ -50,4 +51,4 @@ Here we have two tables `T1` is displayed as
 \[ {\begin{array}{c|c|c} a & b & a\rightarrow b\\ \hline \mathbf{F} & \mathbf{F} & \mathbf{T} \\ \mathbf{F} & \mathbf{T} & \mathbf{T} \\ \mathbf{T} & \mathbf{F} & \mathbf{F} \\ \mathbf{T} & \mathbf{T} & \mathbf{T} \end{array}} \]
 and `T2` gives
 \[ {\begin{array}{c|c|c} a & b & \color{red}{\underline{a\oplus b}}\\ \hline \mathbf{F} & \mathbf{F} & \color{red}{\underline{\mathbf{F} }} \\ \mathbf{F} & \mathbf{T} & \mathbf{T} \\ \mathbf{T} & \mathbf{F} & \color{red}{\underline{\mathbf{T} }} \\ \mathbf{T} & \mathbf{T} & \color{red}{\underline{\mathbf{F} }}\end{array}} \]
-Notice in both the effect of `table_bool_abbreviate:true`.
+Notice in both the effect of `table_bool_abbreviate:true`. 

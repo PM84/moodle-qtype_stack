@@ -266,15 +266,15 @@ class stack_ast_filter_602_castext_simplifier implements stack_cas_astfilter {
                         if ($p instanceof MP_List && count($p->items) > 0 && $p->items[0] instanceof MP_String &&
                             ($p->items[0]->value === 'demoodle' || $p->items[0]->value === 'demarkdown' ||
                                     $p->items[0]->value === 'htmlformat' || $p->items[0]->value === 'iframe' ||
-                                    $p->items[0]->value === 'textdownload')) {
+                                    $p->items[0]->value === 'geogebra' || $p->items[0]->value === 'textdownload')) {
                             // That or above is somethign one needs to update if we add new format tuning blocks.
                             $good = false;
                             if ($p->items[0]->value === $node->items[0]->value) {
                                 $same = true;
                             }
                             if ($node->items[0]->value === 'htmlformat' && ($p->items[0]->value === 'iframe' ||
-                                    $p->items[0]->value === 'textdownload')) {
-                                // JSXGraph and textdownload are blocks that enforce specific formats.
+                                    $p->items[0]->value === 'textdownload' || $p->items[0]->value === 'geogebra')) {
+                                // JSXGraph, textdownload and geogebra are blocks that enforce specific formats.
                                 $same = true;
                             }
                             break;
@@ -291,7 +291,8 @@ class stack_ast_filter_602_castext_simplifier implements stack_cas_astfilter {
                             $node->items[1] instanceof MP_String && count($node->items) === 2) {
                         $params = [$node->items[0]->value, $node->items[1]->value];
                         $proc = new stack_cas_castext2_demoodle([]);
-                        $n = new MP_String($proc->postprocess($params));
+                        $n = new MP_String($proc->postprocess($params, new castext2_default_processor(),
+                                    new castext2_placeholder_holder()));
                         $n->position['castext'] = true;
                         $node->parentnode->replace($node, $n);
                         return false;
@@ -305,7 +306,8 @@ class stack_ast_filter_602_castext_simplifier implements stack_cas_astfilter {
                             instanceof MP_String && count($node->items) === 2) {
                         $params = [$node->items[0]->value, $node->items[1]->value];
                         $proc = new stack_cas_castext2_demarkdown([]);
-                        $n = new MP_String($proc->postprocess($params));
+                        $n = new MP_String($proc->postprocess($params, new castext2_default_processor(),
+                                    new castext2_placeholder_holder()));
                         $n->position['castext'] = true;
                         $node->parentnode->replace($node, $n);
                         return false;

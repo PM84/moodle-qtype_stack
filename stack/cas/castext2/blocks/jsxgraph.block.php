@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Stateful.  If not, see <http://www.gnu.org/licenses/>.
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../block.interface.php');
@@ -29,19 +30,25 @@ class stack_cas_castext2_jsxgraph extends stack_cas_castext2_block {
 
     /* This is not something we want people to edit in general. */
     public static $namedversions = [
-        /* TODO: make this `cdn-latest` if possible, no point in having it
-         * pointing to a particular version.
-         */
         'cdn' => [
+            'css' => 'https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.min.css',
+            'js' => 'https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js',
+        ],
+        'cdn-1.8.0' => [
+            'css' => 'https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.8.0/jsxgraph.min.css',
+            'js' => 'https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.8.0/jsxgraphcore.min.js',
+        ],
+        'cdn-1.5.0' => [
             'css' => 'https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.5.0/jsxgraph.min.css',
-            'js' => 'https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.5.0/jsxgraphcore.min.js'],
+            'js' => 'https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.5.0/jsxgraphcore.min.js',
+        ],
         'local' => [
             'css' => 'cors://jsxgraph.min.css',
             'js' => 'cors://jsxgraphcore.min.js',
-        ]
+        ],
     ];
 
-    public function compile($format, $options):  ? MP_Node {
+    public function compile($format, $options): ?MP_Node {
         $r = new MP_List([new MP_String('iframe')]);
 
         // We need to transfer the parameters forward.
@@ -95,19 +102,19 @@ class stack_cas_castext2_jsxgraph extends stack_cas_castext2_block {
         $r->items[] = new MP_List([
             new MP_String('script'),
             new MP_String(json_encode(['type' => 'text/x-mathjax-config'])),
-            new MP_String('MathJax.Hub.Config({messageStyle: "none"});')
+            new MP_String('MathJax.Hub.Config({messageStyle: "none"});'),
         ]);
         $r->items[] = new MP_List([
             new MP_String('script'),
-            new MP_String(json_encode(['type' => 'text/javascript', 'src' => $mathjax]))
+            new MP_String(json_encode(['type' => 'text/javascript', 'src' => $mathjax])),
         ]);
         $r->items[] = new MP_List([
             new MP_String('style'),
-            new MP_String(json_encode(['href' => $css]))
+            new MP_String(json_encode(['href' => $css])),
         ]);
         $r->items[] = new MP_List([
             new MP_String('script'),
-            new MP_String(json_encode(['type' => 'text/javascript', 'src' => $js]))
+            new MP_String(json_encode(['type' => 'text/javascript', 'src' => $js])),
         ]);
 
         // We need to define a size for the inner content.
@@ -121,15 +128,15 @@ class stack_cas_castext2_jsxgraph extends stack_cas_castext2_block {
             $height = $xpars['height'];
         }
 
-        $astyle = "width:calc($width - 3px);height:calc($height - 3px);";
+        $astyle = "width:calc(100% - 3px);height:calc(100vh - 3px);";
 
         if (array_key_exists('aspect-ratio', $xpars)) {
             $aspectratio = $xpars['aspect-ratio'];
             // Unset the undefined dimension, if both are defined then we have a problem.
             if (array_key_exists('height', $xpars)) {
-                $astyle = "height:calc($height - 3px);aspect-ratio:$aspectratio;";
+                $astyle = "height:calc(100% - 3px);aspect-ratio:$aspectratio;";
             } else if (array_key_exists('width', $xpars)) {
-                $astyle = "width:calc($width - 3px);aspect-ratio:$aspectratio;";
+                $astyle = "width:calc(100% - 3px);aspect-ratio:$aspectratio;";
             }
         }
 
@@ -187,12 +194,13 @@ class stack_cas_castext2_jsxgraph extends stack_cas_castext2_block {
         return $r;
     }
 
-    public function is_flat() : bool {
+    public function is_flat(): bool {
         // Even when the content were flat we need to evaluate this during postprocessing.
         return false;
     }
 
-    public function postprocess(array $params, castext2_processor $processor): string {
+    public function postprocess(array $params, castext2_processor $processor,
+        castext2_placeholder_holder $holder): string {
         return 'This is never happening! The logic goes to [[iframe]].';
     }
 
@@ -217,8 +225,10 @@ class stack_cas_castext2_jsxgraph extends stack_cas_castext2_block {
         }
 
         // NOTE! List ordered by length. For the trimming logic.
-        $validunits = ['vmin', 'vmax', 'rem', 'em', 'ex', 'px', 'cm', 'mm',
-            'in', 'pt', 'pc', 'ch', 'vh', 'vw', '%'];
+        $validunits = [
+            'vmin', 'vmax', 'rem', 'em', 'ex', 'px', 'cm', 'mm',
+            'in', 'pt', 'pc', 'ch', 'vh', 'vw', '%',
+        ];
 
         $widthend   = false;
         $heightend  = false;
@@ -272,7 +282,7 @@ class stack_cas_castext2_jsxgraph extends stack_cas_castext2_block {
             $err[] = stack_string('stackBlock_jsxgraph_underdefined_dimension');
         }
 
-        if (array_key_exists('version', $this->params) && array_key_exists($this->params['version'], self::$namedversions)) {
+        if (array_key_exists('version', $this->params) && !array_key_exists($this->params['version'], self::$namedversions)) {
             $valid    = false;
             $err[] = stack_string('stackBlock_jsxgraph_unknown_named_version');
         }
@@ -301,7 +311,8 @@ class stack_cas_castext2_jsxgraph extends stack_cas_castext2_block {
                         $valids = array_merge($valids, $inputs);
                     }
                     $err[] = stack_string('stackBlock_jsxgraph_param', [
-                        'param' => implode(', ', $valids)]);
+                        'param' => implode(', ', $valids),
+                    ]);
                 }
             }
         }

@@ -13,7 +13,7 @@ Currently STACK does not process the LaTeX itself.  It is displayed on the user'
 * Anything enclosed between `\( .... \)` symbols is treated as an _inline equation_, as is the case with normal LaTeX.
 * Anything enclosed between matching `\[` and `\]` is treated as a _displayed equation_, in the centre of a new line.
 * We do not support the use of dollar symbols such as `$...$` and `$$...$$` for denoting LaTeX mathematics environments.  See the notes on [currency](CASText.md#currency) below and also the page on [MathJax](../Installation/Mathjax.md#delimiters) for more information.
-* Don't use LaTeX text formatting features such as `\\`, instead use the HTML versions.
+* Don't use LaTeX text formatting features such as `\\` outside equations, instead use the HTML versions.
 * Anything enclosed between `{@` and `@}` delimiters is evaluated by the CAS and replaced by the LaTeX representing the result.  Some notes.
  * By default this is displayed as an _inline equation_.  This is analogous to using LaTeX symbols. Note however, that you don't need to use `\({@ stuff @}\)`, and that `{@ stuff @}` is sufficient.
  * To get a displayed equation centred on a line of its own, you must use `\[{@ stuff @}\]`, as in LaTeX.
@@ -42,15 +42,15 @@ To control whether or not the CAS expressions are simplified, see the details ab
 
 The question text what the student actually sees.  This was called "question text" in previous versions.
 
-It is a slightly modified form of CAS text.  To allow a student to answer a question you must include an [inputs](Inputs.md) in the question text. For example, students need a box into which their answer will be put.
+It is a slightly modified form of CAStext.  To allow a student to answer a question you must include an [inputs](../Authoring/Inputs/index.md) in the question text. For example, students need a box into which their answer will be put.
 
-To place an [input](Inputs.md) into the question enclose the name of the [Maxima](../CAS/Maxima.md) variable to which the student's answer is assigned between inside the following tag.  If the student's answer is going to be assigned to the variable `ans1` then use the tag `[[input:ans1]]`.  You will also be required to place a corresponding tag to indicate the position of any validation feedback (whether or not this is shown to the student): `[[validation:ans1]]`.  You can use any legitimate variable name.
+To place an [input](../Authoring/Inputs/index.md) into the question enclose the name of the [Maxima](../CAS/Maxima_background.md) variable to which the student's answer is assigned between inside the following tag.  If the student's answer is going to be assigned to the variable `ans1` then use the tag `[[input:ans1]]`.  You will also be required to place a corresponding tag to indicate the position of any validation feedback (whether or not this is shown to the student): `[[validation:ans1]]`.  You can use any legitimate variable name.
 
-* When the question is created this is replaced with the appropriate [input](Inputs.md).
+* When the question is created this is replaced with the appropriate [input](../Authoring/Inputs/index.md).
 * When the student answers, this variable name is available to each [potential response trees](Potential_response_trees.md).
 * Inputs are created and deleted by adding appropriate tags to the question text.  Therefore, beware if you delete the tags as this will also delete the input from the question.
 
-To place another potential response tree in the question just choose a sensible name and add in a tag `[[feedback:prt1]]`.  
+To place another potential response tree in the question just choose a sensible name and add in a tag `[[feedback:prt1]]`.
 
 * These tags are replaced by appropriate feedback as necessary.  Note, if you add the feedback to the question text this will always be shown by the STACK question, regardless of the quiz settings.  You may prefer to place the tags in the "specific feedback" block of the editing form.  Availability of the specific feedback is controlled by the Moodle quiz settings.  There is some compromise here between the ability to position the feedback tags anywhere in the question text (e.g. next to a particular input) and control over when it is shown.  This is most difficult in questions with many parts.  For a single part question we recommend you use the specific feedback block.
 * Tags can be moved anywhere within the question text.
@@ -63,19 +63,17 @@ To place another potential response tree in the question just choose a sensible 
 General feedback (called "worked solution" in previous versions) is shown to the student after they have attempted the question. Unlike feedback, which depends on the response the student gave, the same general feedback text is shown to all students.
 
 The general feedback may depend on any question variables, but may _not_ depend on any of the inputs.
-While this design decision is restrictive, it is a deliberate separation of feedback
-which should be done via potential response trees, from a model solution to this
-problem which can be written before a question is deployed.
+While this design decision is restrictive, it is a deliberate separation of feedback which should be done via potential response trees, from a model solution to this problem which can be written before a question is deployed.
 
 ## CASText and currency {#currency}
 
 It is common to want to use the dollar sign for currency.  However, this conflicts with the use of the dollar sign for delimiters for mathematics.  For this reason we discourage the use of dollars to delimit mathematics in STACK.
 
-* If you are using dollars for currency then you must protect them with a backslash, i.e. `\$`, otherwise the CASText validation will fail.
+If you are using dollars for currency then you must protect them with a backslash, i.e. `\$`, otherwise the CASText validation will fail.
 
-## Facts ##
+## Facts and hints ##
 
-STACK has an in-built formula sheet.  This used to be called a "hints" system, but the word hint is used elsewhere in Moodle so this is now called "facts".  Parts of this can be added to CASText using the [fact sheet](Fact_sheets.md)
+STACK has an in-built formula sheet which is used for facts and hints".  Standard text can be added using the [fact sheet](../Authoring/Question_blocks/Fact_sheets.md)
 
 ## Reference materials ##
 
@@ -87,7 +85,7 @@ HTML and LaTeX are needed for authoring STACK questions, and some basic referenc
 
 ## CASText generating functions ##
 
-If a CASText area is to include several copies of repeatative content, for instance several versions of some text (or a SVG graphic) containing 
+If a CASText area is to include several copies of repetitive content, for instance several versions of some text (or a SVG graphic) containing
 different parameters, it is possible to define a CASText generating function within the Question variables using the STACK function `castext`.
 
 For example, within the [Question variables](Variables.md) section, define
